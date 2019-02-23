@@ -422,5 +422,5 @@ It is example of repeating task. It marks by wave.</textarea
   };
 
   renderFilters();
-  //renderCards(CARDS_COUNT.default);
+  // renderCards(CARDS_COUNT.default);
 })();
