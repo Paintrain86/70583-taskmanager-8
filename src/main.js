@@ -1,6 +1,6 @@
 'use strict';
 (function initPage() {
-  const CARDS_COUNT = {
+  const cardsCount = {
     min: 0,
     max: 10,
     default: 7
@@ -13,52 +13,39 @@
     const filterItemSelector = `.filter__input`;
     const filterCountSelector = `.filter__all-count`;
 
-    const FILTER_CARDS_RESULT = {
-      min: CARDS_COUNT.min,
-      max: CARDS_COUNT.max
+    const filterCardsResult = {
+      min: cardsCount.min,
+      max: cardsCount.max
     };
 
     const filters = [{
       name: `all`,
-      isChecked: true,
-      isDisabled: false,
-      count: getRandomIntegerFromCount(FILTER_CARDS_RESULT.min, FILTER_CARDS_RESULT.max)
+      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
     },
     {
       name: `overdue`,
-      isChecked: false,
-      isDisabled: true,
-      count: getRandomIntegerFromCount(FILTER_CARDS_RESULT.min, FILTER_CARDS_RESULT.max)
+      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
     },
     {
       name: `today`,
-      isChecked: false,
-      isDisabled: true,
-      count: getRandomIntegerFromCount(FILTER_CARDS_RESULT.min, FILTER_CARDS_RESULT.max)
+      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max),
+      isChecked: true
     },
     {
       name: `favorites`,
-      isChecked: false,
-      isDisabled: false,
-      count: getRandomIntegerFromCount(FILTER_CARDS_RESULT.min, FILTER_CARDS_RESULT.max)
+      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
     },
     {
       name: `repeating`,
-      isChecked: false,
-      isDisabled: false,
-      count: getRandomIntegerFromCount(FILTER_CARDS_RESULT.min, FILTER_CARDS_RESULT.max)
+      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
     },
     {
       name: `tags`,
-      isChecked: false,
-      isDisabled: false,
-      count: getRandomIntegerFromCount(FILTER_CARDS_RESULT.min, FILTER_CARDS_RESULT.max)
+      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
     },
     {
       name: `archive`,
-      isChecked: false,
-      isDisabled: false,
-      count: getRandomIntegerFromCount(FILTER_CARDS_RESULT.min, FILTER_CARDS_RESULT.max)
+      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
     }];
 
     const getFilterItem = (item) => `
@@ -68,7 +55,7 @@
         class="filter__input visually-hidden"
         name="filter"
         ${item.isChecked ? `checked` : ``}
-        ${item.isDisabled ? `disabled` : ``}
+        ${(item.count > 0) ? `` : `disabled`}
       />
       <label for="filter__${item.name}" class="filter__label">
         ${item.name} <span class="filter__all-count">${item.count}</span>
@@ -84,13 +71,11 @@
       const label = filtersBlock.querySelector(`[for="${input.id}"]`);
       const count = parseInt(label.querySelector(filterCountSelector).textContent, 10);
 
-      renderCards(Number.isNaN(count) ? CARDS_COUNT.default : count);
+      renderCards(Number.isNaN(count) ? cardsCount.default : count);
     };
 
     filtersBlock.insertAdjacentHTML(`afterBegin`, getFilterItemsHtml(filters));
-    [].forEach.call(filtersBlock.querySelectorAll(filterItemSelector), (item) => {
-      item.addEventListener(`change`, onFilterChange);
-    });
+    filtersBlock.addEventListener(`change`, onFilterChange);
   };
 
   const renderCards = (count) => {
@@ -422,5 +407,4 @@ It is example of repeating task. It marks by wave.</textarea
   };
 
   renderFilters();
-  // renderCards(CARDS_COUNT.default);
 })();
