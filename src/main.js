@@ -10,7 +10,6 @@
 
   const renderFilters = () => {
     const filtersBlock = document.querySelector(`.main__filter`);
-    const filterItemSelector = `.filter__input`;
     const filterCountSelector = `.filter__all-count`;
 
     const filterCardsResult = {
