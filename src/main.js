@@ -49,7 +49,9 @@ import getCard from './get-card.js';
       count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
     }];
 
-    const getFilterItemsHtml = (items) => items.map((item) => getFilter(item.name, item.count, item.isChecked)).join(``);
+    const getFilterItemsHtml = (items) => items.map((item) => {
+      return getFilter(item.name, item.count, item.isChecked);
+    }).join(``);
 
     const onFilterChange = (e) => {
       e.preventDefault();
@@ -73,7 +75,7 @@ import getCard from './get-card.js';
 
     const removeAllCards = () => {
       if (cards) {
-        [].forEach.call(cards, (card) => {
+        cards.forEach((card) => {
           cardsBlock.removeChild(card);
         });
       }
