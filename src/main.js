@@ -1,3 +1,5 @@
+import utils from './util.js';
+import getTasks from './get-tasks.js';
 import getFilter from './get-filter.js';
 import getCard from './get-card.js';
 
@@ -7,8 +9,6 @@ import getCard from './get-card.js';
     max: 10,
     default: 7
   };
-
-  const getRandomIntegerFromCount = (min = 0, max = 5) => Math.floor(min + Math.random() * (max - min));
 
   const renderFilters = () => {
     const filtersBlock = document.querySelector(`.main__filter`);
@@ -21,32 +21,32 @@ import getCard from './get-card.js';
 
     const filters = [{
       name: `all`,
-      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
+      count: utils.getRandomInteger(filterCardsResult.min, filterCardsResult.max)
     },
     {
       name: `overdue`,
-      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
+      count: utils.getRandomInteger(filterCardsResult.min, filterCardsResult.max)
     },
     {
       name: `today`,
-      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max),
+      count: utils.getRandomInteger(filterCardsResult.min, filterCardsResult.max),
       isChecked: true
     },
     {
       name: `favorites`,
-      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
+      count: utils.getRandomInteger(filterCardsResult.min, filterCardsResult.max)
     },
     {
       name: `repeating`,
-      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
+      count: utils.getRandomInteger(filterCardsResult.min, filterCardsResult.max)
     },
     {
       name: `tags`,
-      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
+      count: utils.getRandomInteger(filterCardsResult.min, filterCardsResult.max)
     },
     {
       name: `archive`,
-      count: getRandomIntegerFromCount(filterCardsResult.min, filterCardsResult.max)
+      count: utils.getRandomInteger(filterCardsResult.min, filterCardsResult.max)
     }];
 
     const getFilterItemsHtml = (items) => items.map((item) => {
@@ -72,6 +72,7 @@ import getCard from './get-card.js';
     const cards = cardsBlock.querySelectorAll(`.card`);
     const cardsEmptyBlock = document.querySelector(`.board__no-tasks`);
     const isCards = count > 0;
+    const newCards = getTasks(count);
 
     const removeAllCards = () => {
       if (cards) {
@@ -82,13 +83,13 @@ import getCard from './get-card.js';
     };
 
     const getAllCards = () => {
-      let result = ``;
+      let fragment = document.createDocumentFragment();
 
-      for (let i = 1; i <= count; i++) {
-        result += getCard();
+      for (let card of newCards) {
+        fragment.appendChild(getCard(card));
       }
 
-      return result;
+      return fragment;
     };
 
     removeAllCards();
@@ -97,9 +98,10 @@ import getCard from './get-card.js';
     cardsEmptyBlock.classList[isCards ? `add` : `remove`](`visually-hidden`);
 
     if (isCards) {
-      cardsBlock.insertAdjacentHTML(`afterBegin`, getAllCards());
+      cardsBlock.appendChild(getAllCards());
     }
   };
 
   renderFilters();
+  renderCards(cardsCount.default);
 })();
