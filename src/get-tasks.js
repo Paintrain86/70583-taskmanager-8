@@ -29,7 +29,7 @@ const getDaysMap = () => {
 const getDueDate = () => {
   const dateOffset = utils.getRandomInteger(ranges.dueDate.min, ranges.dueDate.max);
 
-  return new Date(Date.now() + (utils.getRandomBoolean ? dateOffset : -dateOffset));
+  return new Date(Date.now() + (utils.getRandomBoolean() ? dateOffset : -dateOffset));
 };
 
 const getSingleTaskObject = () => {
