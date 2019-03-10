@@ -28,10 +28,18 @@ const insertElementsFromHtml = (parent, htmlString) =>{
   parent.appendChild(fragment);
 };
 
+const createSingleElement = (htmlString) => {
+  const newElement = document.createElement(`div`);
+  insertElementsFromHtml(newElement, htmlString);
+
+  return newElement.firstChild;
+};
+
 export default {
   getRandomInteger: getRandomIntegerFromRange,
   getRandomBoolean: getRandomBooleanValue,
   getRandomFromArray: getRandomValueFromArray,
   getUniqueArray: getUniqueListFromArray,
-  insertElements: insertElementsFromHtml
+  insertElements: insertElementsFromHtml,
+  createElement: createSingleElement
 };

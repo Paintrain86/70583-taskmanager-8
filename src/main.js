@@ -1,7 +1,7 @@
 import utils from './util.js';
 import getTasks from './get-tasks.js';
 import getFilter from './get-filter.js';
-import getCard from './get-card.js';
+import Card from './get-card-oop.js';
 
 const cardsCount = {
   min: 0,
@@ -62,43 +62,30 @@ const renderFilters = () => {
     renderCards(Number.isNaN(count) ? cardsCount.default : count);
   };
 
-  filtersBlock.insertAdjacentHTML(`afterBegin`, getFilterItemsHtml(filters));
+  filtersBlock.innerHTML = ``;
+  utils.insertElements(filtersBlock, getFilterItemsHtml(filters));
   filtersBlock.addEventListener(`change`, onFilterChange);
 };
 
 const renderCards = (count) => {
   const cardsBlock = document.querySelector(`.board__tasks`);
-  const cards = cardsBlock.querySelectorAll(`.card`);
   const cardsEmptyBlock = document.querySelector(`.board__no-tasks`);
   const isCards = count > 0;
   const newCards = getTasks(count);
 
-  const removeAllCards = () => {
-    if (cards) {
-      cards.forEach((card) => {
-        cardsBlock.removeChild(card);
-      });
-    }
-  };
-
   const getAllCards = () => {
-    let fragment = document.createDocumentFragment();
+    for (let cardObject of newCards) {
+      let card = new Card(cardObject);
 
-    for (let card of newCards) {
-      fragment.appendChild(getCard(card));
+      card.render(cardsBlock);
     }
-
-    return fragment;
   };
 
-  removeAllCards();
+  cardsBlock.innerHTML = ``;
 
   cardsBlock.classList[isCards ? `remove` : `add`](`visually-hidden`);
   cardsEmptyBlock.classList[isCards ? `add` : `remove`](`visually-hidden`);
-
-  if (isCards) {
-    cardsBlock.appendChild(getAllCards());
-  }
+  getAllCards();
 };
 
 renderFilters();
