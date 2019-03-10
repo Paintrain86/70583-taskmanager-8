@@ -62,43 +62,28 @@ const renderFilters = () => {
     renderCards(Number.isNaN(count) ? cardsCount.default : count);
   };
 
-  filtersBlock.insertAdjacentHTML(`afterBegin`, getFilterItemsHtml(filters));
+  filtersBlock.innerHTML = ``;
+  utils.insertElements(filtersBlock, getFilterItemsHtml(filters));
   filtersBlock.addEventListener(`change`, onFilterChange);
 };
 
 const renderCards = (count) => {
   const cardsBlock = document.querySelector(`.board__tasks`);
-  const cards = cardsBlock.querySelectorAll(`.card`);
   const cardsEmptyBlock = document.querySelector(`.board__no-tasks`);
   const isCards = count > 0;
   const newCards = getTasks(count);
 
-  const removeAllCards = () => {
-    if (cards) {
-      cards.forEach((card) => {
-        cardsBlock.removeChild(card);
-      });
-    }
-  };
-
-  const getAllCards = () => {
-    let fragment = document.createDocumentFragment();
-
+  const createAllCards = () => {
     for (let card of newCards) {
-      fragment.appendChild(getCard(card));
+      cardsBlock.appendChild(getCard(card));
     }
-
-    return fragment;
   };
 
-  removeAllCards();
+  cardsBlock.innerHTML = ``;
+  createAllCards();
 
   cardsBlock.classList[isCards ? `remove` : `add`](`visually-hidden`);
   cardsEmptyBlock.classList[isCards ? `add` : `remove`](`visually-hidden`);
-
-  if (isCards) {
-    cardsBlock.appendChild(getAllCards());
-  }
 };
 
 renderFilters();
