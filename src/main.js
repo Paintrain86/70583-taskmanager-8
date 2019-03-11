@@ -1,7 +1,8 @@
 import utils from './util.js';
 import getTasks from './get-tasks.js';
 import getFilter from './get-filter.js';
-import getCard from './get-card.js';
+import Card from './get-card.js';
+import CardEdit from './get-card-edit.js';
 
 const cardsCount = {
   min: 0,
@@ -74,8 +75,8 @@ const renderCards = (count) => {
   const newCards = getTasks(count);
 
   const createAllCards = () => {
-    for (let card of newCards) {
-      cardsBlock.appendChild(getCard(card));
+    for (let cardObject of newCards) {
+      renderCard(cardObject);
     }
   };
 
@@ -84,6 +85,31 @@ const renderCards = (count) => {
 
   cardsBlock.classList[isCards ? `remove` : `add`](`visually-hidden`);
   cardsEmptyBlock.classList[isCards ? `add` : `remove`](`visually-hidden`);
+
+  function renderCard(object) {
+    const card = new Card(object);
+    const cardEdit = new CardEdit(object);
+
+    cardsBlock.appendChild(card.render());
+
+    card.onEdit = () => {
+      cardEdit.render();
+      cardsBlock.replaceChild(cardEdit.element, card.element);
+      card.unrender();
+    };
+
+    cardEdit._onCancelEdit = () => {
+      card.render();
+      cardsBlock.replaceChild(card.element, cardEdit.element);
+      cardEdit.unrender();
+    };
+
+    cardEdit.onSubmit = () => {
+      card.render();
+      cardsBlock.replaceChild(card.element, cardEdit.element);
+      cardEdit.unrender();
+    };
+  }
 };
 
 renderFilters();

@@ -1,6 +1,6 @@
 import utils from './util.js';
 
-class Card {
+class CardEdit {
   constructor(object) {
     this._title = object.title;
     this._dueDate = object.dueDate;
@@ -12,11 +12,8 @@ class Card {
     this._isDone = object.isDone;
 
     this._element = null;
-    this._state = {
-      isEdit: false
-    };
-
-    this._onEdit = null;
+    this._onSubmit = null;
+    this._onCancelEdit = null;
   }
 
   _isRepeated() {
@@ -27,16 +24,21 @@ class Card {
     return this._element;
   }
 
-  set onEdit(cb) {
-    this._onEdit = cb;
+  set onSubmit(cb) {
+    this._onSubmit = cb;
   }
 
-  _onEditBtnClick(e) {
+  _onSubmitBtnClick(e) {
     e.preventDefault();
+    if (typeof this._onSubmit === `function`) {
+      this._onSubmit();
+    }
+  }
 
-    if (typeof this._onEdit === `function`) {
-      this._onEdit();
-      this._state.isEdit = !this._state.isEdit;
+  _onCancelEditBtnClick(e) {
+    e.preventDefault();
+    if (typeof this._onCancelEdit === `function`) {
+      this._onCancelEdit();
     }
   }
 
@@ -44,11 +46,20 @@ class Card {
     return [...this._tags].map((tag) => {
       return `
         <span class="card__hashtag-inner">
+          <input
+            type="hidden"
+            name="hashtag"
+            value="${tag}"
+            class="card__hashtag-hidden-input"
+          />
           <button type="button" class="card__hashtag-name">
             #${tag}
           </button>
+          <button type="button" class="card__hashtag-delete">
+            delete
+          </button>
         </span>
-      `;
+      `.trim();
     }).join(``);
   }
 
@@ -72,6 +83,15 @@ class Card {
     }
 
     return daysHtml;
+  }
+
+  get colorsHtml() {
+    const colors = new Set([`black`, `yellow`, `blue`, `green`, `pink`]);
+
+    return [...colors].map((color) => `
+      <input type="radio" id="color-${color}-2" class="card__color-input card__color-input--${color} visually-hidden" name="color" value="${color}" ${(color === this._color) ? `checked` : ``} />
+      <label for="color-${color}-2" class="card__color card__color--${color}">${color}</label>
+    `.trim()).join(``);
   }
 
   get deadlineHtml() {
@@ -110,7 +130,7 @@ class Card {
 
   get template() {
     return `
-    <article class="card card--${this._color} ${this._isRepeated() ? `card--repeat` : ``}">
+    <article class="card card--${this._color} card--edit ${this._isRepeated() ? `card--repeat` : ``}">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
@@ -134,8 +154,20 @@ class Card {
         <div class="card__settings">
           <div class="card__details">
             <div class="card__dates">
+              <button class="card__date-deadline-toggle" type="button">
+                date: <span class="card__date-status">no</span>
+              </button>
+
               <fieldset class="card__date-deadline" ${utils.getRandomBoolean() ? `disabled` : ``}>
                 ${this.deadlineHtml}
+              </fieldset>
+
+              <button class="card__repeat-toggle" type="button">
+                repeat: <span class="card__repeat-status">no</span>
+              </button>
+
+              <fieldset class="card__repeat-days" disabled>
+                ${this.repeatingDaysHtml}
               </fieldset>
             </div>
 
@@ -143,6 +175,10 @@ class Card {
               <div class="card__hashtag-list">
                 ${this.hashtagsHtml}
               </div>
+
+              <label>
+                <input type="text" class="card__hashtag-input" name="hashtag-input" placeholder="Type new hashtag here" />
+              </label>
             </div>
           </div>
 
@@ -151,8 +187,18 @@ class Card {
             <img src="${this._picture}" alt="task picture" class="card__img" />
           </label>
 
+          <div class="card__colors-inner">
+            <h3 class="card__colors-title">Color</h3>
+            <div class="card__colors-wrap">
+              ${this.colorsHtml}
+            </div>
+          </div>
         </div>
 
+        <div class="card__status-btns">
+          <button class="card__save" type="submit">save</button>
+          <button class="card__delete" type="button">delete</button>
+        </div>
       </div>
     </form>
   </article>
@@ -160,11 +206,13 @@ class Card {
   }
 
   listen() {
-    this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onEditBtnClick.bind(this));
+    this._element.querySelector(`.card__form`).addEventListener(`submit`, this._onSubmitBtnClick.bind(this));
+    this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onCancelEditBtnClick.bind(this));
   }
 
   unlisten() {
-    this._element.querySelector(`.card__btn--edit`).removeEventListener(`click`, this._onEditBtnClick);
+    this._element.querySelector(`.card__form`).removeEventListener(`submit`, this._onSubmitBtnClick);
+    this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onCancelEditBtnClick);
   }
 
   render() {
@@ -179,4 +227,4 @@ class Card {
   }
 }
 
-export default Card;
+export default CardEdit;
