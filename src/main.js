@@ -1,7 +1,8 @@
 import utils from './util.js';
 import getTasks from './get-tasks.js';
 import getFilter from './get-filter.js';
-import getCard from './get-card.js';
+import Card from './get-card.js';
+import CardEdit from './get-card-edit.js';
 
 const cardsCount = {
   min: 0,
@@ -73,9 +74,34 @@ const renderCards = (count) => {
   const isCards = count > 0;
   const newCards = getTasks(count);
 
+  const renderSingleCard = (object) => {
+    const card = new Card(object);
+    const cardEdit = new CardEdit(object);
+
+    card.onEdit = () => {
+      cardEdit.render();
+      cardsBlock.replaceChild(cardEdit.element, card.element);
+      card.unrender();
+    };
+
+    cardEdit._onCancelEdit = () => {
+      card.render();
+      cardsBlock.replaceChild(card.element, cardEdit.element);
+      cardEdit.unrender();
+    };
+
+    cardEdit.onSubmit = () => {
+      card.render();
+      cardsBlock.replaceChild(card.element, cardEdit.element);
+      cardEdit.unrender();
+    };
+
+    cardsBlock.appendChild(card.render());
+  };
+
   const createAllCards = () => {
-    for (let card of newCards) {
-      cardsBlock.appendChild(getCard(card));
+    for (let cardObject of newCards) {
+      renderSingleCard(cardObject);
     }
   };
 
