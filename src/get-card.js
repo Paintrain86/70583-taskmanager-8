@@ -159,22 +159,22 @@ class Card {
     `.trim();
   }
 
-  listen() {
+  bind() {
     this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onEditBtnClick.bind(this));
   }
 
-  unlisten() {
+  unbind() {
     this._element.querySelector(`.card__btn--edit`).removeEventListener(`click`, this._onEditBtnClick);
   }
 
   render() {
     this._element = utils.createElement(this.template);
-    this.listen();
+    this.bind();
     return this._element;
   }
 
   unrender() {
-    this.unlisten();
+    this.unbind();
     this._element = null;
   }
 }

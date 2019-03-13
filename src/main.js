@@ -74,23 +74,9 @@ const renderCards = (count) => {
   const isCards = count > 0;
   const newCards = getTasks(count);
 
-  const createAllCards = () => {
-    for (let cardObject of newCards) {
-      renderCard(cardObject);
-    }
-  };
-
-  cardsBlock.innerHTML = ``;
-  createAllCards();
-
-  cardsBlock.classList[isCards ? `remove` : `add`](`visually-hidden`);
-  cardsEmptyBlock.classList[isCards ? `add` : `remove`](`visually-hidden`);
-
-  function renderCard(object) {
+  const renderSingleCard = (object) => {
     const card = new Card(object);
     const cardEdit = new CardEdit(object);
-
-    cardsBlock.appendChild(card.render());
 
     card.onEdit = () => {
       cardEdit.render();
@@ -109,7 +95,21 @@ const renderCards = (count) => {
       cardsBlock.replaceChild(card.element, cardEdit.element);
       cardEdit.unrender();
     };
-  }
+
+    cardsBlock.appendChild(card.render());
+  };
+
+  const createAllCards = () => {
+    for (let cardObject of newCards) {
+      renderSingleCard(cardObject);
+    }
+  };
+
+  cardsBlock.innerHTML = ``;
+  createAllCards();
+
+  cardsBlock.classList[isCards ? `remove` : `add`](`visually-hidden`);
+  cardsEmptyBlock.classList[isCards ? `add` : `remove`](`visually-hidden`);
 };
 
 renderFilters();

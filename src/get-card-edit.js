@@ -205,24 +205,24 @@ class CardEdit {
     `.trim();
   }
 
-  listen() {
+  bind() {
     this._element.querySelector(`.card__form`).addEventListener(`submit`, this._onSubmitBtnClick.bind(this));
     this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onCancelEditBtnClick.bind(this));
   }
 
-  unlisten() {
+  unbind() {
     this._element.querySelector(`.card__form`).removeEventListener(`submit`, this._onSubmitBtnClick);
     this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onCancelEditBtnClick);
   }
 
   render() {
     this._element = utils.createElement(this.template);
-    this.listen();
+    this.bind();
     return this._element;
   }
 
   unrender() {
-    this.unlisten();
+    this.unbind();
     this._element = null;
   }
 }
