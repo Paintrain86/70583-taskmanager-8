@@ -644,6 +644,10 @@ body {
   padding: 0;
   width: 100%;
   margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 .card__repeat-days:disabled {
   display: none;
