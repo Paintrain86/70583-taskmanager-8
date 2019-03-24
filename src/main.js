@@ -1,8 +1,8 @@
 import utils from './util.js';
 import getTasks from './get-tasks.js';
 import getFilter from './get-filter.js';
-import Card from './get-card.js';
-import CardEdit from './get-card-edit.js';
+import Card from './card.js';
+import CardEdit from './card-edit.js';
 
 const cardsCount = {
   min: 0,
@@ -84,7 +84,7 @@ const renderCards = (count) => {
       card.unrender();
     };
 
-    cardEdit._onCancelEdit = () => {
+    cardEdit.onCancelEdit = () => {
       card.render();
       cardsBlock.replaceChild(card.element, cardEdit.element);
       cardEdit.unrender();
