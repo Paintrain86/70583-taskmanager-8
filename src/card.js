@@ -1,7 +1,9 @@
 import utils from './util.js';
+import CardComponent from './card-component.js';
 
-class Card {
+class Card extends CardComponent {
   constructor(object) {
+    super();
     this._title = object.title;
     this._dueDate = object.dueDate;
     this._tags = object.tags;
@@ -11,20 +13,16 @@ class Card {
     this._isFavorite = object.isFavorite;
     this._isDone = object.isDone;
 
-    this._element = null;
     this._state = {
       isEdit: false
     };
 
     this._onEdit = null;
+    this._onEditBtnClick = this._onEditBtnClick.bind(this);
   }
 
   _isRepeated() {
     return [...this._repeatingDays.values()].some((isRepeat) => isRepeat === true);
-  }
-
-  get element() {
-    return this._element;
   }
 
   set onEdit(cb) {
@@ -160,22 +158,11 @@ class Card {
   }
 
   bind() {
-    this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onEditBtnClick.bind(this));
+    this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onEditBtnClick);
   }
 
   unbind() {
     this._element.querySelector(`.card__btn--edit`).removeEventListener(`click`, this._onEditBtnClick);
-  }
-
-  render() {
-    this._element = utils.createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this.unbind();
-    this._element = null;
   }
 }
 

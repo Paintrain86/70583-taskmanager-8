@@ -1,7 +1,9 @@
 import utils from './util.js';
+import CardComponent from './card-component.js';
 
-class CardEdit {
+class CardEdit extends CardComponent {
   constructor(object) {
+    super();
     this._title = object.title;
     this._dueDate = object.dueDate;
     this._tags = object.tags;
@@ -11,21 +13,23 @@ class CardEdit {
     this._isFavorite = object.isFavorite;
     this._isDone = object.isDone;
 
-    this._element = null;
     this._onSubmit = null;
     this._onCancelEdit = null;
+
+    this._onSubmitBtnClick = this._onSubmitBtnClick.bind(this);
+    this._onCancelEditBtnClick = this._onCancelEditBtnClick.bind(this);
   }
 
   _isRepeated() {
     return [...this._repeatingDays.values()].some((isRepeat) => isRepeat === true);
   }
 
-  get element() {
-    return this._element;
-  }
-
   set onSubmit(cb) {
     this._onSubmit = cb;
+  }
+
+  set onCancelEdit(cb) {
+    this._onCancelEdit = cb;
   }
 
   _onSubmitBtnClick(e) {
@@ -206,24 +210,13 @@ class CardEdit {
   }
 
   bind() {
-    this._element.querySelector(`.card__form`).addEventListener(`submit`, this._onSubmitBtnClick.bind(this));
-    this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onCancelEditBtnClick.bind(this));
+    this._element.querySelector(`.card__form`).addEventListener(`submit`, this._onSubmitBtnClick);
+    this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onCancelEditBtnClick);
   }
 
   unbind() {
     this._element.querySelector(`.card__form`).removeEventListener(`submit`, this._onSubmitBtnClick);
     this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onCancelEditBtnClick);
-  }
-
-  render() {
-    this._element = utils.createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this.unbind();
-    this._element = null;
   }
 }
 
