@@ -1,4 +1,4 @@
-import utils from './util.js';
+import moment from 'moment';
 import CardComponent from './card-component.js';
 
 class Card extends CardComponent {
@@ -50,60 +50,8 @@ class Card extends CardComponent {
     }).join(``);
   }
 
-  get repeatingDaysHtml() {
-    let daysHtml = ``;
-
-    for (let [key, value] of this._repeatingDays) {
-      daysHtml += `
-        <input
-          class="visually-hidden card__repeat-day-input"
-          type="checkbox"
-          id="repeat-${key.toLowerCase()}-2"
-          name="repeat"
-          value="${key.toLowerCase()}"
-          ${(value) ? `checked` : ``}
-        />
-        <label class="card__repeat-day" for="repeat-${key.toLowerCase()}-2"
-          >${key.toLowerCase()}</label
-        >
-      `.trim();
-    }
-
-    return daysHtml;
-  }
-
   get deadlineHtml() {
-    const getTime = () => {
-      const hours = this._dueDate.getHours();
-
-      return `${(hours <= 12) ? hours : hours - 12}:${this._dueDate.getMinutes()} ${(hours < 12) ? `AM` : `PM`}`;
-    };
-    const getDay = () => {
-      const monthNames = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
-
-      return `${this._dueDate.getDate()} ${monthNames[this._dueDate.getMonth()]}`;
-    };
-
-    return `
-      <label class="card__input-deadline-wrap">
-        <input
-          class="card__date"
-          type="text"
-          placeholder="${getDay()}"
-          name="date"
-          value="${getDay()}"
-        />
-      </label>
-      <label class="card__input-deadline-wrap">
-        <input
-          class="card__time"
-          type="text"
-          placeholder="${getTime()}"
-          name="time"
-          value="${getTime()}"
-        />
-      </label>
-    `.trim();
+    return `${this._dueDate ? moment(this._dueDate).format(`D MMMM, hh:mm A`) : ``}`;
   }
 
   get template() {
@@ -132,7 +80,7 @@ class Card extends CardComponent {
         <div class="card__settings">
           <div class="card__details">
             <div class="card__dates">
-              <fieldset class="card__date-deadline" ${utils.getRandomBoolean() ? `disabled` : ``}>
+              <fieldset class="card__date-deadline" ${this._dueDate ? `` : `disabled`}>
                 ${this.deadlineHtml}
               </fieldset>
             </div>
@@ -144,9 +92,9 @@ class Card extends CardComponent {
             </div>
           </div>
 
-          <label class="card__img-wrap ${utils.getRandomBoolean() ? `card__img-wrap--empty` : ``}">
+          <label class="card__img-wrap ${this._picture ? `` : `card__img-wrap--empty`}">
             <input type="file" class="card__img-input visually-hidden" name="img" />
-            <img src="${this._picture}" alt="task picture" class="card__img" />
+            <img src="${this._picture ? this._picture : ``}" alt="task picture" class="card__img" />
           </label>
 
         </div>
@@ -163,6 +111,16 @@ class Card extends CardComponent {
 
   unbind() {
     this._element.querySelector(`.card__btn--edit`).removeEventListener(`click`, this._onEditBtnClick);
+  }
+
+  update(data) {
+    this._title = data.title;
+    this._tags = data.tags;
+    this._color = data.color;
+    this._repeatingDays = data.repeatingDays;
+    this._dueDate = data.dueDate;
+
+    this._state.isRepeated = this._isRepeated();
   }
 }
 

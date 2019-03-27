@@ -90,7 +90,14 @@ const renderCards = (count) => {
       cardEdit.unrender();
     };
 
-    cardEdit.onSubmit = () => {
+    cardEdit.onSubmit = (newObject) => {
+      object.title = newObject.title;
+      object.tags = newObject.tags;
+      object.color = newObject.color;
+      object.repeatingDays = newObject.repeatingDays;
+      object.dueDate = newObject.dueDate;
+
+      card.update(object);
       card.render();
       cardsBlock.replaceChild(card.element, cardEdit.element);
       cardEdit.unrender();

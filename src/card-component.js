@@ -22,6 +22,8 @@ class CardComponent {
 
   unbind() {}
 
+  update() {}
+
   render() {
     this._element = utils.createElement(this.template);
     this.bind();
