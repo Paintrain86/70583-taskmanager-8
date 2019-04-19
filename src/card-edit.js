@@ -22,8 +22,8 @@ class CardEdit extends CardComponent {
 
     this._onCancelEdit = null;
     this._onCancelEditBtnClick = this._onCancelEditBtnClick.bind(this);
-	
-	this._onDelete = null;
+
+    this._onDelete = null;
     this._onDeleteBtnClick = this._onDeleteBtnClick.bind(this);
 
     this._onCancelEdit = null;
@@ -40,7 +40,7 @@ class CardEdit extends CardComponent {
   set onSubmit(cb) {
     this._onSubmit = cb;
   }
-  
+
   set onDelete(cb) {
     this._onDelete = cb;
   }
